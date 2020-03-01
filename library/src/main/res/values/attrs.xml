@@ -9,6 +9,7 @@
         <attr name="labelTextColor" format="string"/>
         <attr name="valueTextColor" format="string"/>
         <attr name="rippleColor" format="string"/>
-
+        <attr name="labelFont" format="string"/>
+        <attr name="valueFont" format="string"/>
     </declare-styleable>
 </resources>

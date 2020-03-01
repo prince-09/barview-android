@@ -22,7 +22,7 @@ public class BarView extends ScrollView {
     List<BarModel> data;
 
     private int BAR_MARGIN = 6, VERTICAL_SPACING = 48, BAR_HEIGHT = 20, LABEL_FONT_SIZE = 18, VALUE_FONT_SIZE = 9;
-    private String LABEL_TEXT_COLOR = "#424242", VALUE_TEXT_COLOR = "#FFFFFF", RIPPLE_COLOUR = "#EEEEEE";// has to be >2
+    private String LABEL_TEXT_COLOR = "#424242", VALUE_TEXT_COLOR = "#FFFFFF", RIPPLE_COLOUR = "#EEEEEE",LABEL_FONT=null,VALUE_FONT=null;// has to be >2
 
     public void setData(List<BarModel> data) {
         this.data = data;
@@ -50,7 +50,9 @@ public class BarView extends ScrollView {
                 VALUE_FONT_SIZE,
                 LABEL_TEXT_COLOR,
                 VALUE_TEXT_COLOR,
-                RIPPLE_COLOUR
+                RIPPLE_COLOUR,
+                LABEL_FONT,
+                VALUE_FONT
         );
         barGroup.setLayoutParams(new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -109,7 +111,8 @@ public class BarView extends ScrollView {
             VALUE_FONT_SIZE = a.getInteger(R.styleable.BarView_valueTextSize, VALUE_FONT_SIZE);
 
             Log.i("DEBUG", "BarGroup: " + LABEL_FONT_SIZE);
-
+            VALUE_FONT=a.getString(R.styleable.BarView_labelFont);
+            LABEL_FONT=a.getString(R.styleable.BarView_labelFont);
             LABEL_TEXT_COLOR = a.getString(R.styleable.BarView_labelTextColor);
             VALUE_TEXT_COLOR = a.getString(R.styleable.BarView_valueTextColor);
             RIPPLE_COLOUR = a.getString(R.styleable.BarView_rippleColor);

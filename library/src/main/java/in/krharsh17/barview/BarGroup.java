@@ -29,7 +29,7 @@ class BarGroup extends ConstraintLayout {
     float progress;
 
     private int BAR_MARGIN = 6, VERTICAL_SPACING = 48, BAR_HEIGHT = 20, LABEL_FONT_SIZE = 18, VALUE_FONT_SIZE = 9;
-    private String LABEL_TEXT_COLOR = "#424242", VALUE_TEXT_COLOR = "#FFFFFF", RIPPLE_COLOUR = "#EEEEEE";// has to be >2
+    private String LABEL_TEXT_COLOR = "#424242", VALUE_TEXT_COLOR = "#FFFFFF", RIPPLE_COLOUR = "#EEEEEE",VALUE_FONT=null,LABEL_FONT=null;// has to be >2
 
     BarGroup(Context context, String labelText, String color, String valueText, float progress) {
         super(context);
@@ -46,7 +46,7 @@ class BarGroup extends ConstraintLayout {
     }
 
 
-    public BarGroup(Context context, String labelText, String color, String valueText, float progress, int BAR_MARGIN, int VERTICAL_SPACING, int BAR_HEIGHT, int LABEL_FONT_SIZE, int VALUE_FONT_SIZE, String LABEL_TEXT_COLOR, String VALUE_TEXT_COLOR, String RIPPLE_COLOUR) {
+    public BarGroup(Context context, String labelText, String color, String valueText, float progress, int BAR_MARGIN, int VERTICAL_SPACING, int BAR_HEIGHT, int LABEL_FONT_SIZE, int VALUE_FONT_SIZE, String LABEL_TEXT_COLOR, String VALUE_TEXT_COLOR, String RIPPLE_COLOUR,String LABEL_FONT,String VALUE_FONT) {
         super(context);
         this.context = context;
         this.labelText = labelText;
@@ -61,7 +61,8 @@ class BarGroup extends ConstraintLayout {
         this.LABEL_TEXT_COLOR = LABEL_TEXT_COLOR;
         this.VALUE_TEXT_COLOR = VALUE_TEXT_COLOR;
         this.RIPPLE_COLOUR = RIPPLE_COLOUR;
-
+        this.LABEL_FONT=LABEL_FONT;
+        this.VALUE_FONT=VALUE_FONT;
         label = new TextView(context);
         initial = new View(context);
         bar = new Bar(context);
@@ -97,7 +98,10 @@ class BarGroup extends ConstraintLayout {
         label.setText(parseLabel(labelText));
         label.setTextColor(Color.parseColor(LABEL_TEXT_COLOR));
         label.setTextSize(TypedValue.COMPLEX_UNIT_SP, LABEL_FONT_SIZE);
-        label.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/josefin_sans.ttf"));
+        if(LABEL_FONT!=null)
+            label.setTypeface(Typeface.createFromAsset(context.getAssets(), LABEL_FONT));
+        else
+            label.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/josefin_sans.ttf"));
         label.setLayoutParams(labelParams);
         label.setTextAlignment(TEXT_ALIGNMENT_CENTER);
         label.setGravity(Gravity.CENTER_VERTICAL);
@@ -136,7 +140,10 @@ class BarGroup extends ConstraintLayout {
         value.setPadding(0, 0, 0, dp(8));
         value.setTextColor(Color.parseColor(VALUE_TEXT_COLOR));
         value.setTextSize(TypedValue.COMPLEX_UNIT_SP, VALUE_FONT_SIZE);
-        value.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/josefin_sans.ttf"));
+        if(VALUE_FONT!=null)
+            value.setTypeface(Typeface.createFromAsset(context.getAssets(), VALUE_FONT));
+        else
+            value.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/josefin_sans.ttf"));
         value.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         value.setClickable(true);
         value.setFocusable(true);
