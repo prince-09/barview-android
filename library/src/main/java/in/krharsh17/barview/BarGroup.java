@@ -14,6 +14,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Constraints;
 
+import java.util.Hashtable;
+
 class BarGroup extends ConstraintLayout {
     Context context;
 
@@ -24,7 +26,7 @@ class BarGroup extends ConstraintLayout {
 
     ConstraintSet constraintSet;
     LayoutParams labelParams, initialParams;
-
+    public  static Hashtable<String, Typeface> fontCache = new Hashtable<>();
     String labelText, color, valueText;
     float progress;
 
@@ -133,6 +135,7 @@ class BarGroup extends ConstraintLayout {
     }
 
     void setupValue() {
+
         value.setText(valueText);
         value.setBackground(context.getResources().getDrawable(R.drawable.label_background));
         value.setRotation(90);
@@ -140,17 +143,27 @@ class BarGroup extends ConstraintLayout {
         value.setPadding(0, 0, 0, dp(8));
         value.setTextColor(Color.parseColor(VALUE_TEXT_COLOR));
         value.setTextSize(TypedValue.COMPLEX_UNIT_SP, VALUE_FONT_SIZE);
-        if(VALUE_FONT!=null)
-            value.setTypeface(Typeface.createFromAsset(context.getAssets(), VALUE_FONT));
-        else
-            value.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/josefin_sans.ttf"));
+        Typeface tf=get(VALUE_FONT,context);
+        if(tf!=null)
+            value.setTypeface(tf);
         value.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         value.setClickable(true);
         value.setFocusable(true);
         Bar.setRippleDrawable(value, Color.parseColor(color), Color.parseColor(RIPPLE_COLOUR));
         this.addView(value);
     }
-
+    public static Typeface get(String name, Context context) {
+        Typeface tf = fontCache.get(name);
+        if (tf == null) {
+            try {
+                tf = Typeface.createFromAsset(context.getAssets(), name);
+            } catch (Exception e) {
+                return null;
+            }
+            fontCache.put(name, tf);
+        }
+        return tf;
+    }
     void applyConstraints() {
         constraintSet = new ConstraintSet();
         constraintSet.clone(this);
