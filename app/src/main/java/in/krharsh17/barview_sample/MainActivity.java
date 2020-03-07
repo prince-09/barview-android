@@ -1,6 +1,7 @@
 package in.krharsh17.barview_sample;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -27,50 +28,55 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<BarModel> barModels = new ArrayList<>();
 
         barModels.add(new BarModel(
-                "Kumar Harsh",
-                "3.0",
+                "Samsung",
+                "30.91",
                 getRandomColor(),
-                0.6f
+                0.31f
         ));
 
         barModels.add(new BarModel(
-                "Raj Kothari",
-                "4.0",
+                "Apple",
+                "25.89",
                 getRandomColor(),
-                0.8f
+                1f
         ));
 
         barModels.add(new BarModel(
-                "Garima Singh",
-                "3.6",
+                "Huawei",
+                "10.98",
                 getRandomColor(),
-                0.72f
+                0.11f
         ));
 
         barModels.add(new BarModel(
-                "Anushka Chandel",
-                "4.2",
+                "Xiaomi",
+                "7.8",
                 getRandomColor(),
-                0.84f
+                0.07f
         ));
 
         barModels.add(new BarModel(
-                "Parth Sharma",
-                "5.0",
+                "Oppo",
+                "4.31",
                 getRandomColor(),
-                1.0f
+                0.04f
         ));
 
         barModels.add(new BarModel(
-                "Rakshita Jain",
-                "2.0",
+                "Others",
+                "20.11",
                 getRandomColor(),
-                0.4f
+                0.20f
         ));
 
 
         barView.setData(barModels);
-
+        barView.setOnBarClickListener(new BarView.OnBarClickListener() {
+            @Override
+            public void onBarClicked(int pos) {
+                Toast.makeText(MainActivity.this, "Bar at position " + pos, Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 

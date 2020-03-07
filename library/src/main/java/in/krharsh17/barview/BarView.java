@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -14,51 +17,178 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BarView extends ScrollView {
-    LinearLayout containerLayout;
-    Context context;
+public class BarView extends ScrollView implements Constants {
+   private LinearLayout containerLayout;
+    private Context context;
+    private OnBarClickListener onBarClickListener;
+     private List<BarGroup> barGroups;
+     private List<BarModel> data;
 
-    List<BarGroup> barGroups;
-    List<BarModel> data;
+ 
+    private int barMargin = 6;
+    private int verticalSpacing = 48;
+    private int barHeight = 20;
+    private int labelFontSize = 18;
+    private int valueFontSize = 9;
 
-    private int BAR_MARGIN = 6, VERTICAL_SPACING = 48, BAR_HEIGHT = 20, LABEL_FONT_SIZE = 18, VALUE_FONT_SIZE = 9;
-    private String LABEL_TEXT_COLOR = "#424242", VALUE_TEXT_COLOR = "#FFFFFF", RIPPLE_COLOUR = "#EEEEEE",LABEL_FONT=null,VALUE_FONT=null;// has to be >2
+    private String labelTextColor = Constants.LABEL_TEXT_COLOR,LABEL_FONT=null,VALUE_FONT=null;
+    private String valueTextColor = Constants.VALUE_TEXT_COLOR;
+    private String rippleColor = Constants.RIPPLE_COLOR;                   // has to be >2
+
+    public int getBarMargin() {
+        return barMargin;
+    }
+
+    public void setBarMargin(int barMargin) {
+        this.barMargin = barMargin;
+    }
+
+    public int getVerticalSpacing() {
+        return verticalSpacing;
+    }
+
+    public void setVerticalSpacing(int verticalSpacing) {
+        this.verticalSpacing = verticalSpacing;
+    }
+
+    public int getBarHeight() {
+        return barHeight;
+    }
+
+    public void setBarHeight(int barHeight) {
+        this.barHeight = barHeight;
+    }
+
+    public int getLabelFontSize() {
+        return labelFontSize;
+    }
+
+    public void setLabelFontSize(int labelFontSize) {
+        this.labelFontSize = labelFontSize;
+    }
+
+    public int getValueFontSize() {
+        return valueFontSize;
+    }
+
+    public void setValueFontSize(int valueFontSize) {
+        this.valueFontSize = valueFontSize;
+    }
+
+    public String getLabelTextColor() {
+        return labelTextColor;
+    }
+
+    public void setLabelTextColor(String labelTextColor) {
+        this.labelTextColor = labelTextColor;
+    }
+
+    public String getValueTextColor() {
+        return valueTextColor;
+    }
+
+    public void setValueTextColor(String valueTextColor) {
+        this.valueTextColor = valueTextColor;
+    }
+
+    public String getRippleColor() {
+        return rippleColor;
+    }
+
+    public void setRippleColor(String rippleColor) {
+        this.rippleColor = rippleColor;
+    }
+
+
+
+
+    /**
+     * Returns a reference to the attached Listener
+     */
+    public OnBarClickListener getOnBarClickListener() {
+        return onBarClickListener;
+    }
+    /**
+     * Attaches a onBarClickListener
+     */
+    public void setOnBarClickListener(OnBarClickListener onBarClickListener) {
+        this.onBarClickListener = onBarClickListener;
+    }
+
+    public interface OnBarClickListener {
+        void onBarClicked(int pos);
+    }
+ 
 
     public void setData(List<BarModel> data) {
         this.data = data;
         populateBarView();
     }
 
-    void populateBarView() {
-        for(BarModel b : data){
+    private void populateBarView() {
+        for (BarModel b : data) {
             addBar(b);
         }
-
     }
 
-    void addBar(BarModel data) {
+    private void addBar(BarModel data) {
         BarGroup barGroup = new BarGroup(
                 context,
-                data.label,
-                data.color,
-                data.value,
-                data.fillRatio,
-                BAR_MARGIN,
-                VERTICAL_SPACING,
-                BAR_HEIGHT,
-                LABEL_FONT_SIZE,
-                VALUE_FONT_SIZE,
-                LABEL_TEXT_COLOR,
-                VALUE_TEXT_COLOR,
-                RIPPLE_COLOUR,
-                LABEL_FONT,
-                VALUE_FONT
+ 
+                data.getLabel(),
+                data.getColor(),
+                data.getValue(),
+                data.getFillRatio(),
+            barMargin,
+            verticalSpacing,
+            barHeight,
+            labelFontSize,
+            valueFontSize,
+            labelTextColor,
+            valueTextColor,
+            rippleColor,
+            LABEL_FONT,
+            VALUE_FONT
+ 
         );
         barGroup.setLayoutParams(new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
+        
+        barGroup.setOnTouchListener(new OnTouchListener() {
+            private int CLICK_ACTION_THRESHOLD = 200;
+            private float startX;
+            private float startY;
 
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getX();
+                        startY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        float endX = event.getX();
+                        float endY = event.getY();
+                        if (isAClick(startX, endX, startY, endY)) {
+                            Log.d("BarView", "you clicked!");
+                            onBarClickListener.onBarClicked(barGroups.indexOf(v));
+                        }
+                        break;
+                    default:
+                        Log.d("BarView", "onTouch:Unknown Event ");
+                break;
+                }
+                return true;
+            }
+
+            private boolean isAClick(float startX, float endX, float startY, float endY) {
+                float differenceX = Math.abs(startX - endX);
+                float differenceY = Math.abs(startY - endY);
+                return !(differenceX > CLICK_ACTION_THRESHOLD/* =5 */ || differenceY > CLICK_ACTION_THRESHOLD);
+            }
+        });
         barGroups.add(barGroup);
 
         containerLayout.addView(barGroup);
@@ -76,7 +206,6 @@ public class BarView extends ScrollView {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
-
         containerLayout.setOrientation(LinearLayout.VERTICAL);
 
         this.addView(containerLayout);
@@ -94,47 +223,45 @@ public class BarView extends ScrollView {
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
 
+
         containerLayout.setOrientation(LinearLayout.VERTICAL);
 
         this.addView(containerLayout);
 
-        if(attrs != null){
+        if (attrs != null) {
 
             final TypedArray a = context.obtainStyledAttributes(attrs,
                     R.styleable.BarView, 0, 0);
+ 
 
-            Log.i("DEBUG", "BarGroup: " + a.getInt(R.styleable.BarView_valueTextSize, 2));
-
-            VERTICAL_SPACING = a.getInteger(R.styleable.BarView_barGroupSpacing, VERTICAL_SPACING);
-            BAR_HEIGHT = a.getInteger(R.styleable.BarView_barHeight, BAR_HEIGHT);
-            LABEL_FONT_SIZE = a.getInteger(R.styleable.BarView_labelTextSize, LABEL_FONT_SIZE);
-            VALUE_FONT_SIZE = a.getInteger(R.styleable.BarView_valueTextSize, VALUE_FONT_SIZE);
-
-            Log.i("DEBUG", "BarGroup: " + LABEL_FONT_SIZE);
+ 
+            verticalSpacing = a.getInteger(R.styleable.BarView_barGroupSpacing, verticalSpacing);
+            barHeight = a.getInteger(R.styleable.BarView_barHeight, barHeight);
+            labelFontSize = a.getInteger(R.styleable.BarView_labelTextSize, labelFontSize);
+            valueFontSize = a.getInteger(R.styleable.BarView_valueTextSize, valueFontSize);
             VALUE_FONT=a.getString(R.styleable.BarView_labelFont);
             LABEL_FONT=a.getString(R.styleable.BarView_labelFont);
-            LABEL_TEXT_COLOR = a.getString(R.styleable.BarView_labelTextColor);
-            VALUE_TEXT_COLOR = a.getString(R.styleable.BarView_valueTextColor);
-            RIPPLE_COLOUR = a.getString(R.styleable.BarView_rippleColor);
-
-            if(LABEL_TEXT_COLOR == null)
-                LABEL_TEXT_COLOR = "#424242";
-            if(VALUE_TEXT_COLOR == null)
-                VALUE_TEXT_COLOR = "#FFFFFF";
-            if(RIPPLE_COLOUR == null)
-                RIPPLE_COLOUR = "#EEEEEE";
-
+            labelTextColor = a.getString(R.styleable.BarView_labelTextColor);
+            valueTextColor = a.getString(R.styleable.BarView_valueTextColor);
+            rippleColor = a.getString(R.styleable.BarView_rippleColor);
+            if (labelTextColor == null)
+                labelTextColor = Constants.LABEL_TEXT_COLOR;
+            if (valueTextColor == null)
+                valueTextColor = Constants.VALUE_TEXT_COLOR;
+            if (rippleColor == null)
+                rippleColor = RIPPLE_COLOR;
+ 
             a.recycle();
         }
-
     }
 
     public static String getRandomColor() {
-        char[] letters = "0123456789ABCDEF".toCharArray();
+        char[] letters = CHAR_ARRAY.toCharArray();
         StringBuilder color = new StringBuilder("#");
         for (int i = 0; i < 6; i++) {
             color.append(letters[(int) Math.round(Math.floor(Math.random() * 16))]);
         }
         return color.toString();
     }
+
 }

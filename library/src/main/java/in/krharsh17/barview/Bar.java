@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -44,7 +43,6 @@ class Bar extends View {
                 view.setBackground(stateListDrawable);
             }
         } catch (Exception e) {
-            Log.e("DEBUG", "" + e);
         }
     }
 }

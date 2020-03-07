@@ -14,9 +14,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Constraints;
 
+ 
 import java.util.Hashtable;
-
-class BarGroup extends ConstraintLayout {
+ 
+class BarGroup extends ConstraintLayout implements Constants {
+ 
     Context context;
 
     TextView label;
@@ -25,13 +27,29 @@ class BarGroup extends ConstraintLayout {
     TextView value;
 
     ConstraintSet constraintSet;
-    LayoutParams labelParams, initialParams;
+ 
+  
     public  static Hashtable<String, Typeface> fontCache = new Hashtable<>();
-    String labelText, color, valueText;
+    
+
+   
+    LayoutParams labelParams;
+    LayoutParams initialParams;
+
+    String labelText;
+    String color;
+    String valueText;
     float progress;
 
-    private int BAR_MARGIN = 6, VERTICAL_SPACING = 48, BAR_HEIGHT = 20, LABEL_FONT_SIZE = 18, VALUE_FONT_SIZE = 9;
-    private String LABEL_TEXT_COLOR = "#424242", VALUE_TEXT_COLOR = "#FFFFFF", RIPPLE_COLOUR = "#EEEEEE",VALUE_FONT=null,LABEL_FONT=null;// has to be >2
+    private int BAR_MARGIN = 6;
+    private int VERTICAL_SPACING = 48;
+    private int BAR_HEIGHT = 20;
+    private int LABEL_FONT_SIZE = 18;
+    private int VALUE_FONT_SIZE = 9;
+    private String labelTextColor = LABEL_TEXT_COLOR;
+    private String valueTextColor = VALUE_TEXT_COLOR,VALUE_FONT=null,LABEL_FONT=null;
+    private String rippleColor = RIPPLE_COLOR;                        // has to be >2
+ 
 
     BarGroup(Context context, String labelText, String color, String valueText, float progress) {
         super(context);
@@ -48,7 +66,23 @@ class BarGroup extends ConstraintLayout {
     }
 
 
-    public BarGroup(Context context, String labelText, String color, String valueText, float progress, int BAR_MARGIN, int VERTICAL_SPACING, int BAR_HEIGHT, int LABEL_FONT_SIZE, int VALUE_FONT_SIZE, String LABEL_TEXT_COLOR, String VALUE_TEXT_COLOR, String RIPPLE_COLOUR,String LABEL_FONT,String VALUE_FONT) {
+ 
+    
+    public BarGroup(
+        Context context, 
+        String labelText, 
+        String color, 
+        String valueText, 
+        float progress, 
+        int BAR_MARGIN, 
+        int VERTICAL_SPACING, 
+        int BAR_HEIGHT, 
+        int LABEL_FONT_SIZE, 
+        int VALUE_FONT_SIZE, 
+        String labelTextColor,
+        String VALUE_TEXT_COLOR, 
+        String RIPPLE_COLOUR,String LABEL_FONT,String VALUE_FONT) {
+ 
         super(context);
         this.context = context;
         this.labelText = labelText;
@@ -60,11 +94,13 @@ class BarGroup extends ConstraintLayout {
         this.BAR_HEIGHT = BAR_HEIGHT;
         this.LABEL_FONT_SIZE = LABEL_FONT_SIZE;
         this.VALUE_FONT_SIZE = VALUE_FONT_SIZE;
-        this.LABEL_TEXT_COLOR = LABEL_TEXT_COLOR;
-        this.VALUE_TEXT_COLOR = VALUE_TEXT_COLOR;
-        this.RIPPLE_COLOUR = RIPPLE_COLOUR;
+ 
+        this.labelTextColor = labelTextColor;
+        this.valueTextColor = VALUE_TEXT_COLOR;
+        this.rippleColor = RIPPLE_COLOUR;
         this.LABEL_FONT=LABEL_FONT;
         this.VALUE_FONT=VALUE_FONT;
+ 
         label = new TextView(context);
         initial = new View(context);
         bar = new Bar(context);
@@ -98,7 +134,7 @@ class BarGroup extends ConstraintLayout {
                 dp(VERTICAL_SPACING / 2)
         );
         label.setText(parseLabel(labelText));
-        label.setTextColor(Color.parseColor(LABEL_TEXT_COLOR));
+        label.setTextColor(Color.parseColor(labelTextColor));
         label.setTextSize(TypedValue.COMPLEX_UNIT_SP, LABEL_FONT_SIZE);
         if(LABEL_FONT!=null)
             label.setTypeface(Typeface.createFromAsset(context.getAssets(), LABEL_FONT));
@@ -115,22 +151,23 @@ class BarGroup extends ConstraintLayout {
         initialParams.rightMargin = dp(12);
         initial.setLayoutParams(initialParams);
         initial.setBackgroundColor(Color.parseColor(color));
-        Bar.setRippleDrawable(initial, Color.parseColor(color), Color.parseColor(RIPPLE_COLOUR));
+        Bar.setRippleDrawable(initial, Color.parseColor(color), Color.parseColor(rippleColor));
         initial.setClickable(true);
         initial.setFocusable(true);
         this.addView(initial);
     }
 
-    void setupBar() {
+    public void setupBar() {
+        int screen_width = Math.round((160*context.getResources().getDisplayMetrics().widthPixels)/(context.getResources().getDisplayMetrics().xdpi));
         bar.setLayoutParams(new LinearLayout.LayoutParams(
-                dp(Math.round(context.getResources().getDisplayMetrics().widthPixels / 3.2)), dp(BAR_HEIGHT)
+                screen_width, dp(BAR_HEIGHT)
         ));
         bar.setPadding(0,dp(1), 0, dp(1));
         this.addView(bar);
         bar.setBackgroundColor(Color.parseColor(color));
 //        bar.setBackground(ViewUtils.generateBackgroundWithShadow(this, Color.parseColor(color),
 //                0, Color.parseColor(color), 1, Gravity.BOTTOM));
-        Bar.setRippleDrawable(bar, Color.parseColor(color), Color.parseColor("#EEEEEE"));
+        Bar.setRippleDrawable(bar, Color.parseColor(color), Color.parseColor(rippleColor));
         bar.setProgress(progress);
     }
 
@@ -141,7 +178,7 @@ class BarGroup extends ConstraintLayout {
         value.setRotation(90);
         value.setGravity(Gravity.CENTER);
         value.setPadding(0, 0, 0, dp(8));
-        value.setTextColor(Color.parseColor(VALUE_TEXT_COLOR));
+        value.setTextColor(Color.parseColor(valueTextColor));
         value.setTextSize(TypedValue.COMPLEX_UNIT_SP, VALUE_FONT_SIZE);
         Typeface tf=get(VALUE_FONT,context);
         if(tf!=null)
@@ -149,7 +186,7 @@ class BarGroup extends ConstraintLayout {
         value.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         value.setClickable(true);
         value.setFocusable(true);
-        Bar.setRippleDrawable(value, Color.parseColor(color), Color.parseColor(RIPPLE_COLOUR));
+        Bar.setRippleDrawable(value, Color.parseColor(color), Color.parseColor(rippleColor));
         this.addView(value);
     }
     public static Typeface get(String name, Context context) {
@@ -195,7 +232,7 @@ class BarGroup extends ConstraintLayout {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics()));
     }
 
-    String parseLabel(String labelText) {
+    private String parseLabel(String labelText) {
         String[] tokens = labelText.split(" ");
         StringBuilder finalizedString = new StringBuilder();
         for (String s : tokens) {
