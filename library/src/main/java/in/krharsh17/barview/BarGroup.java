@@ -3,6 +3,7 @@ package in.krharsh17.barview;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -47,25 +48,14 @@ class BarGroup extends ConstraintLayout implements Constants {
     private int LABEL_FONT_SIZE = 18;
     private int VALUE_FONT_SIZE = 9;
     private String labelTextColor = LABEL_TEXT_COLOR;
-    private String valueTextColor = VALUE_TEXT_COLOR,VALUE_FONT=null,LABEL_FONT=null;
+     private String valueTextColor = VALUE_TEXT_COLOR,VALUE_FONT=null,LABEL_FONT=null;
     private String rippleColor = RIPPLE_COLOR;                        // has to be >2
  
+     
+    private int CORNER_RADIUS;
+ 
 
-    BarGroup(Context context, String labelText, String color, String valueText, float progress) {
-        super(context);
-        this.context = context;
-        this.labelText = labelText;
-        this.color = color;
-        this.valueText = valueText;
-        this.progress = progress;
-
-        label = new TextView(context);
-        initial = new View(context);
-        bar = new Bar(context);
-        value = new TextView(context);
-    }
-
-
+ 
  
     
     public BarGroup(
@@ -81,7 +71,8 @@ class BarGroup extends ConstraintLayout implements Constants {
         int VALUE_FONT_SIZE, 
         String labelTextColor,
         String VALUE_TEXT_COLOR, 
-        String RIPPLE_COLOUR,String LABEL_FONT,String VALUE_FONT) {
+        String RIPPLE_COLOUR,int CORNER_RADIUS,String LABEL_FONT,String VALUE_FONT) {
+ 
  
         super(context);
         this.context = context;
@@ -98,10 +89,12 @@ class BarGroup extends ConstraintLayout implements Constants {
         this.labelTextColor = labelTextColor;
         this.valueTextColor = VALUE_TEXT_COLOR;
         this.rippleColor = RIPPLE_COLOUR;
-        this.LABEL_FONT=LABEL_FONT;
+         this.LABEL_FONT=LABEL_FONT;
         this.VALUE_FONT=VALUE_FONT;
  
-        label = new TextView(context);
+         this.CORNER_RADIUS = CORNER_RADIUS;
+
+         label = new TextView(context);
         initial = new View(context);
         bar = new Bar(context);
         value = new TextView(context);
@@ -150,7 +143,7 @@ class BarGroup extends ConstraintLayout implements Constants {
         initialParams = new LayoutParams(dp(12), dp(BAR_HEIGHT));
         initialParams.rightMargin = dp(12);
         initial.setLayoutParams(initialParams);
-        initial.setBackgroundColor(Color.parseColor(color));
+        initial.setBackground(setUpRoundBars(Color.parseColor(color)));
         Bar.setRippleDrawable(initial, Color.parseColor(color), Color.parseColor(rippleColor));
         initial.setClickable(true);
         initial.setFocusable(true);
@@ -158,15 +151,13 @@ class BarGroup extends ConstraintLayout implements Constants {
     }
 
     public void setupBar() {
-        int screen_width = Math.round((160*context.getResources().getDisplayMetrics().widthPixels)/(context.getResources().getDisplayMetrics().xdpi));
+        int screen_width = Math.round((160 * context.getResources().getDisplayMetrics().widthPixels) / (context.getResources().getDisplayMetrics().xdpi));
         bar.setLayoutParams(new LinearLayout.LayoutParams(
                 screen_width, dp(BAR_HEIGHT)
         ));
-        bar.setPadding(0,dp(1), 0, dp(1));
+        bar.setPadding(0, dp(1), 0, dp(1));
         this.addView(bar);
-        bar.setBackgroundColor(Color.parseColor(color));
-//        bar.setBackground(ViewUtils.generateBackgroundWithShadow(this, Color.parseColor(color),
-//                0, Color.parseColor(color), 1, Gravity.BOTTOM));
+        bar.setBackground(setUpRoundBars(Color.parseColor(color)));
         Bar.setRippleDrawable(bar, Color.parseColor(color), Color.parseColor(rippleColor));
         bar.setProgress(progress);
     }
@@ -250,7 +241,16 @@ class BarGroup extends ConstraintLayout implements Constants {
                 finalizedString.append(s.substring(0, 5) + "..\n");
             }
         }
-        finalizedString.deleteCharAt(finalizedString.length()-1);
+        finalizedString.deleteCharAt(finalizedString.length() - 1);
         return finalizedString.toString();
     }
+
+    public GradientDrawable setUpRoundBars(int color) {
+        GradientDrawable gradientDrawable = new GradientDrawable();
+        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
+        gradientDrawable.setColor(color);
+        gradientDrawable.setCornerRadius(CORNER_RADIUS);
+        return gradientDrawable;
+    }
+
 }

@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.ArrayList;
@@ -31,8 +30,9 @@ public class BarView extends ScrollView implements Constants {
     private int labelFontSize = 18;
     private int valueFontSize = 9;
 
-    private String labelTextColor = Constants.LABEL_TEXT_COLOR,LABEL_FONT=null,VALUE_FONT=null;
-    private String valueTextColor = Constants.VALUE_TEXT_COLOR;
+     private String labelTextColor = Constants.LABEL_TEXT_COLOR,LABEL_FONT=null,VALUE_FONT=null;
+     private int cornerRadius;
+     private String valueTextColor = Constants.VALUE_TEXT_COLOR;
     private String rippleColor = Constants.RIPPLE_COLOR;                   // has to be >2
 
     public int getBarMargin() {
@@ -99,9 +99,6 @@ public class BarView extends ScrollView implements Constants {
         this.rippleColor = rippleColor;
     }
 
-
-
-
     /**
      * Returns a reference to the attached Listener
      */
@@ -139,7 +136,7 @@ public class BarView extends ScrollView implements Constants {
                 data.getColor(),
                 data.getValue(),
                 data.getFillRatio(),
-            barMargin,
+             barMargin,
             verticalSpacing,
             barHeight,
             labelFontSize,
@@ -147,10 +144,12 @@ public class BarView extends ScrollView implements Constants {
             labelTextColor,
             valueTextColor,
             rippleColor,
+          cornerRadius,
             LABEL_FONT,
             VALUE_FONT
  
-        );
+                 
+         );
         barGroup.setLayoutParams(new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -190,7 +189,6 @@ public class BarView extends ScrollView implements Constants {
             }
         });
         barGroups.add(barGroup);
-
         containerLayout.addView(barGroup);
         invalidate();
         requestLayout();
@@ -264,4 +262,9 @@ public class BarView extends ScrollView implements Constants {
         return color.toString();
     }
 
+    public void setCornerRadius(int radius) {
+        this.cornerRadius = radius;
+        containerLayout.removeAllViews();
+        populateBarView();
+    }
 }
