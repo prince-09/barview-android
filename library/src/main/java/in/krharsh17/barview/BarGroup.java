@@ -31,9 +31,6 @@ class BarGroup extends ConstraintLayout implements Constants {
  
   
     public  static Hashtable<String, Typeface> fontCache = new Hashtable<>();
-    
-
-   
     LayoutParams labelParams;
     LayoutParams initialParams;
 
@@ -48,16 +45,9 @@ class BarGroup extends ConstraintLayout implements Constants {
     private int LABEL_FONT_SIZE = 18;
     private int VALUE_FONT_SIZE = 9;
     private String labelTextColor = LABEL_TEXT_COLOR;
-     private String valueTextColor = VALUE_TEXT_COLOR,VALUE_FONT=null,LABEL_FONT=null;
+    private String valueTextColor = VALUE_TEXT_COLOR,VALUE_FONT=null,LABEL_FONT=null;
     private String rippleColor = RIPPLE_COLOR;                        // has to be >2
- 
-     
     private int CORNER_RADIUS;
- 
-
- 
- 
-    
     public BarGroup(
         Context context, 
         String labelText, 
@@ -85,16 +75,13 @@ class BarGroup extends ConstraintLayout implements Constants {
         this.BAR_HEIGHT = BAR_HEIGHT;
         this.LABEL_FONT_SIZE = LABEL_FONT_SIZE;
         this.VALUE_FONT_SIZE = VALUE_FONT_SIZE;
- 
         this.labelTextColor = labelTextColor;
         this.valueTextColor = VALUE_TEXT_COLOR;
         this.rippleColor = RIPPLE_COLOUR;
-         this.LABEL_FONT=LABEL_FONT;
+        this.LABEL_FONT=LABEL_FONT;
         this.VALUE_FONT=VALUE_FONT;
- 
-         this.CORNER_RADIUS = CORNER_RADIUS;
-
-         label = new TextView(context);
+        this.CORNER_RADIUS = CORNER_RADIUS;
+        label = new TextView(context);
         initial = new View(context);
         bar = new Bar(context);
         value = new TextView(context);
