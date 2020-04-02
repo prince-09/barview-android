@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="BarView">
+
         <attr name="barGroupSpacing" format="dimension" />
         <attr name="barHeight" format="dimension" />
         <attr name="labelTextSize" format="dimension"/>
@@ -10,7 +11,6 @@
             <enum name="expand" value="1"/>
         </attr>
         <attr name="introAnimationDuration" format="integer"/>
-
         <attr name="labelTextColor" format="color"/>
         <attr name="valueTextColor" format="color"/>
         <attr name="rippleColor" format="color"/>
