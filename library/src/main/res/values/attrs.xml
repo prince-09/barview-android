@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="BarView">
-
         <attr name="barGroupSpacing" format="dimension" />
         <attr name="barHeight" format="dimension" />
         <attr name="labelTextSize" format="dimension"/>
