@@ -10,6 +10,7 @@
             <enum name="expand" value="1"/>
         </attr>
         <attr name="introAnimationDuration" format="integer"/>
+
         <attr name="labelTextColor" format="color"/>
         <attr name="valueTextColor" format="color"/>
         <attr name="rippleColor" format="color"/>
